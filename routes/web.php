@@ -1,0 +1,377 @@
+    <?php
+
+use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\BannerController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CampaignController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CharityController;
+use App\Http\Controllers\CouponController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\FeaturedProductController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LandingController;
+use App\Http\Controllers\OfferController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PagesController;
+use App\Http\Controllers\PosController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SmsCampaignController;
+use App\Http\Controllers\SmsController;
+use App\Http\Controllers\SslCommerzPaymentController;
+use App\Http\Controllers\SubcategoryController;
+use App\Http\Controllers\SunnahShoppingController;
+use App\Http\Controllers\TestController;
+use App\Http\Controllers\TodayDealController;
+use App\Http\Controllers\TodaysDealController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\VariationController;
+use Illuminate\Support\Facades\Route;
+
+    Route::controller(AdminAuthController::class)->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/login', 'create')->name('login');
+        Route::post('/login', 'store');
+        Route::post('/logout', 'destroy')->name('logout');
+    });
+
+    Route::controller(HomeController::class)->group(function () {
+        Route::get('/fraudCheck', 'fraudCheck')->name('froudCheck');
+        Route::get('/awajDigital', 'CheckBalance');
+        Route::post('/sslc/success', 'success')->name('sslc.success');
+        Route::get('/sslc/failure', 'failure')->name('sslc.failure');
+        Route::get('/sslc/cancel', 'cancel')->name('sslc.cancel');
+        Route::get('/sslc/ipn', 'ipn')->name('sslc.ipn');
+    });
+
+    Route::controller(TestController::class)->group(function () {
+        Route::get('/test', 'test')->name('test');
+    });
+
+    Route::middleware('auth')->name('admin.')->prefix('admin')->group(function () {
+        Route::controller(HomeController::class)->group(function () {
+            Route::get('/dashboard', 'dashboard')->name('dashboard');
+        });
+
+        // Sunnah Shopping Routes
+        Route::controller(SunnahShoppingController::class)->prefix('sunnah')->name('sunnah.')->group(function () {
+            Route::get('/category', 'categoryIndex')->name('category.index');
+            Route::post('/category/store', 'storeCategory')->name('category.store');
+            Route::post('/category/update', 'updateCategory')->name('category.update');
+            Route::delete('/category/destroy/{id}', 'destroyCategory')->name('category.destroy');
+            Route::post('/category/status/{id}', 'toggleStatusCategory')->name('category.status.update');
+
+            Route::get('/subcategory', 'subcategoryIndex')->name('subcategory.index');
+            Route::post('/subcategory/store', 'storeSubcategory')->name('subcategory.store');
+            Route::post('/subcategory/update', 'updateSubcategory')->name('subcategory.update');
+            Route::delete('/subcategory/destroy/{id}', 'destroySubcategory')->name('subcategory.destroy');
+            Route::post('/subcategory/status/{id}', 'toggleStatusSubcategory')->name('subcategory.status.update');
+
+            Route::get('/products', 'products')->name('products.index');
+            Route::post('/product/store', 'storeProduct')->name('product.store');
+            Route::post('/product/update', 'updateProduct')->name('product.update');
+            Route::delete('/product/destroy/{id}', 'destroyProduct')->name('product.destroy');
+            Route::get('/get-subcategories', 'getSubcategories')->name('get.subcategories');
+        });
+
+        // Category Routes
+        Route::controller(CategoryController::class)->name('category.')->prefix('category')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/store', 'store')->name('store');
+            Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+            Route::post('/status/{id}', 'updateStatus')->name('status.update');
+            Route::post('/update', 'updateAjax')->name('update');
+        });
+
+        // Subcategory Routes
+        Route::controller(SubcategoryController::class)->name('subcategory.')->prefix('subcategory')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/store', 'store')->name('store');
+            Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+            Route::post('/status/{id}', 'updateStatus')->name('status.update');
+            Route::post('/update', 'updateAjax')->name('update');
+        });
+
+        // Brand Routes
+        Route::controller(BrandController::class)->name('brand.')->prefix('brand')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/store', 'store')->name('store');
+            Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+            Route::post('/status/{id}', 'updateStatus')->name('status.update');
+            Route::post('/update', 'updateAjax')->name('update');
+        });
+
+        // Variation Routes
+        Route::controller(VariationController::class)->name('attribute.')->prefix('attribute')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/store', 'store')->name('store');
+            Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+            Route::post('/update', 'updateAjax')->name('update');
+            Route::post('/value/store', 'value_store')->name('value.store');
+            Route::delete('/value/destroy/{id}', 'value_destroy')->name('value.destroy');
+            Route::post('/value/update', 'valueUpdateAjax')->name('value.update');
+        });
+
+        // User Routes
+        Route::controller(UserController::class)->name('user.')->prefix('user')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/show/{id}', 'show')->name('show');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::post('/update/{id}', 'update')->name('update');
+            Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+            Route::post('/status/{id}', 'updateStatus')->name('status.update');
+        });
+
+
+        // Pos Routes
+        Route::controller(PosController::class)->name('pos.')->prefix('pos')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/addToCart', 'addToCart')->name('addToCart');
+            Route::post('/deleteCart', 'deleteCart')->name('deleteCart');
+            Route::get('/products', 'getProducts')->name('products');
+            Route::post('/updateCart', 'updateCart')->name('updateCart');
+            Route::post('/clearCart', 'clearCart')->name('clearCart');
+            Route::post('/scanBarcode', 'scanBarcode')->name('scanBarcode');
+            Route::post('/order/store', 'orderStore')->name('order.store');
+            Route::post('/applyCoupon', 'applyCoupon')->name('applyCoupon');
+        });
+
+        // Transaction Routes
+        Route::controller(TransactionController::class)->group(function () {
+            Route::get('/transactions', 'index')->name('transactions');
+        });
+
+        //Customer Routes
+        Route::controller(CustomerController::class)->name('customer.')->prefix('customer')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/search', 'search')->name('search');
+            Route::post('/updateInfo', 'updateInfo')->name('updateInfo');
+        });
+
+        //Order Routes
+        Route::controller(OrderController::class)->name('orders.')->prefix('orders')->group(function () {
+            Route::get('/list/{type}', 'list')->name('list');
+            Route::get('/getOrders', 'getOrders')->name('getOrders');
+            Route::get('/details/{id}', 'details')->name('details');
+            Route::get('/invoice/{id}', 'invoice')->name('invoice');
+            Route::post('/fraudCheck', 'fraudCheck')->name('fraudCheck');
+            Route::post('/update/{id}', 'update')->name('update');
+            Route::get('/printReceipt/{id}', 'printReceipt')->name('printReceipt');
+            Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+            Route::get('/bulkPrint', 'bulkPrint')->name('bulkPrint');
+        });
+
+        //Settings Routes
+        Route::controller(SettingController::class)->name('settings.')->prefix('settings')->group(function () {
+            Route::get('/business', 'business')->name('business');
+            Route::post('/business/update', 'business_update')->name('business.update');
+
+            Route::get('/app/core', 'core_setting')->name('app.core');
+            Route::post('/app/core/update', 'core_update')->name('app.core.update');
+
+            Route::get('/app/invoice', 'invoice_setting')->name('app.invoice');
+            Route::post('/app/invoice/update', 'invoice_update')->name('app.invoice.update');
+
+            Route::get('/app/delivery', 'delivery_setting')->name('app.delivery');
+            Route::post('/app/delivery/steadfast', 'steadfast')->name('app.delivery.steadfast');
+            Route::post('/app/delivery/steadfast/status', 'steadfast_status')->name('app.delivery.steadfast.status');
+            Route::post('/app/delivery/pathao', 'pathao')->name('app.delivery.pathao');
+            Route::post('/app/delivery/pathao/status', 'pathao_status')->name('app.delivery.pathao.status');
+            Route::post('/app/delivery/redx', 'redx')->name('app.delivery.redx');
+            Route::post('/app/delivery/redx/status', 'redx_status')->name('app.delivery.redx.status');
+            Route::get('/app/sms', 'sms')->name('app.sms');
+            Route::post('/app/sms/update', 'sms_update')->name('app.sms.update');
+            Route::post('/app/sms-config/update', 'sms_config_update')->name('app.sms.config.update');
+            Route::get('/app/payment', 'payment')->name('app.payment');
+            Route::post('/app/payment/update', 'payment_update')->name('app.payment.update');
+            Route::post('/app/payment/status', 'payment_status')->name('app.payment.status');
+            Route::get('/app/fraudCheck', 'fraudCheck')->name('app.fraudCheck');
+            Route::post('/app/fraudCheck/update', 'fraudCheck_update')->name('app.fraudCheck.update');
+            Route::post('/app/fraudCheck/status', 'fraudCheck_status')->name('app.fraudCheck.status');
+        });
+
+        //Delivery Routes
+        Route::controller(DeliveryController::class)->name('deliver.')->prefix('deliver')->group(function () {
+            Route::get('/details/{method}/{id}', 'details')->name('details');
+            Route::post('/steadfast/submit', 'steadfast_submit')->name('steadfast.submit');
+            Route::get('/pathao/cities', 'getCities')->name('pathao.cities');
+            Route::get('/pathao/zones/{city_id}', 'getZones')->name('pathao.zones');
+            Route::get('/pathao/areas/{zone_id}', 'getAreas')->name('pathao.areas');
+            Route::post('/pathao/submit/{id}', 'pathao_submit')->name('pathao.submit');
+            Route::get('/redx/areas', 'redx_areas')->name('redx.areas');
+            Route::post('/redx/submit/{id}', 'redx_submit')->name('redx.submit');
+        });
+
+        //Offer Routes
+        Route::controller(OfferController::class)->name('offer.')->prefix('offer')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/store', 'store')->name('store');
+            Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+            Route::post('/status/{id}', 'status_update')->name('status.update');
+            Route::post('/update', 'update')->name('update');
+            Route::get('/product_assign/{id}', 'product_assign')->name('product.assign');
+            Route::post('/product_assign/{id}', 'product_assign_store')->name('product.store');
+            Route::delete('/product/destroy/{id}', 'product_destroy')->name('product.destroy');
+        });
+
+        //Coupon Routes
+        Route::controller(CouponController::class)->name('coupon.')->prefix('coupon')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/store', 'store')->name('store');
+            Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+            Route::post('/status/{id}', 'status_update')->name('status.update');
+            Route::post('/update', 'update')->name('update');
+        });
+
+        //TodaysDeal Routes
+        Route::controller(TodaysDealController::class)->name('todaysDeal.')->prefix('todaysDeal')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/searchProduct', 'searchProduct')->name('searchProduct');
+            Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+            Route::post('/status/{id}', 'status_update')->name('status.update');
+            Route::post('/update', 'update')->name('update');
+        });
+
+        //FeaturedProduct Routes
+        Route::controller(FeaturedProductController::class)->name('featuredProduct.')->prefix('featuredProduct')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/searchProduct', 'searchProduct')->name('searchProduct');
+            Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+            Route::post('/status/{id}', 'status_update')->name('status.update');
+            Route::post('/update', 'update')->name('update');
+        });
+
+        //Sms Routes
+        Route::controller(SmsCampaignController::class)->name('sms.')->prefix('sms')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/customer-count', 'getCustomerCount')->name('customerCount');
+            Route::post('/send', 'send')->name('send');
+        });
+
+        //Banner Routes
+        Route::controller(BannerController::class)->name('banner.')->prefix('banner')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/store', 'store')->name('store');
+            Route::post('/update', 'update')->name('update');
+            Route::post('/status/update/{id}', 'status_update')->name('status.update');
+            Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+        });
+
+
+        //Coupon Routes
+        Route::controller(CampaignController::class)->name('campaign.')->prefix('campaign')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::get('/check-campaign-url', 'checkUrl')->name('checkUrl');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::post('/update/{id}', 'update')->name('update');
+            Route::get('/product/assign/{id}', 'product_assign')->name('product.assign');
+            Route::post('/product/assigned/{id}', 'product_assigned')->name('product.assigned');
+            Route::get('/product', 'product')->name('product');
+            Route::get('/product/create', 'product_create')->name('product.create');
+            Route::post('/campaign/product/store', 'product_store')->name('product.store');
+            Route::delete('/campaign/product/destroy/{id}', 'product_destroy')->name('product.destroy');
+        });
+
+
+        //BLog Routes
+        Route::controller(BlogController::class)->name('blog.')->prefix('blog')->group(function () {
+            // Category Routes
+            Route::get('/category', 'category')->name('category');
+            Route::post('/category/store', 'category_store')->name('category.store');
+            Route::delete('/category/destroy/{id}', 'category_destroy')->name('category.destroy');
+            Route::post('/category/status/{id}', 'category_updateStatus')->name('category.status.update');
+            Route::post('/category/update', 'category_updateAjax')->name('category.update');
+
+            // Blog Routes
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+            Route::post('/status/{id}', 'updateStatus')->name('status.update');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::post('/update/{id}', 'update')->name('update');
+        });
+
+
+        // Charity Routes
+        Route::controller(CharityController::class)->prefix('charity')->name('charity.')->group(function () {
+            Route::get('/category', 'categoryIndex')->name('category.index');
+            Route::post('/category/store', 'storeCategory')->name('category.store');
+            Route::post('/category/update', 'updateCategory')->name('category.update');
+            Route::delete('/category/destroy/{id}', 'destroyCategory')->name('category.destroy');
+            Route::post('/category/status/{id}', 'toggleStatusCategory')->name('category.status.update');
+
+            Route::get('/subcategory', 'subcategoryIndex')->name('subcategory.index');
+            Route::post('/subcategory/store', 'storeSubcategory')->name('subcategory.store');
+            Route::post('/subcategory/update', 'updateSubcategory')->name('subcategory.update');
+            Route::delete('/subcategory/destroy/{id}', 'destroySubcategory')->name('subcategory.destroy');
+            Route::post('/subcategory/status/{id}', 'toggleStatusSubcategory')->name('subcategory.status.update');
+
+            Route::get('/content', 'content')->name('content');
+            Route::get('/content/create', 'content_create')->name('content.create');
+            Route::post('/content/store', 'contentStore')->name('content.store');
+            Route::get('/content/edit/{id}', 'content_edit')->name('content.edit');
+            Route::post('/content/update/{id}', 'updateContent')->name('content.update');
+            Route::delete('/content/destroy/{id}', 'destroyContent')->name('content.destroy');
+            Route::get('/get-subcategories', 'getSubcategories')->name('get.subcategories');
+
+            Route::get('/donations', 'donations')->name('donations');
+            Route::get('/donation/details/{id}', 'donation_details')->name('donation.details');
+            Route::get('/donors', 'donors')->name('donors');
+            Route::get('/donor/details/{phone}', 'donor_details')->name('donor.details');
+        });
+
+
+        //Pages route
+        Route::controller(PagesController::class)->name('pages.')->prefix('pages')->group(function () {
+            Route::get('/footer', 'footer')->name('footer.index');
+            Route::get('/footer/edit/{id}', 'footer_pages_edit')->name('footer.edit');
+            Route::post('/footer/update/{id}', 'footer_pages_update')->name('footer.update');
+        });
+
+
+
+        // Extra Routes of resource controllers can be defined here
+        // Product Routes
+        Route::controller(ProductController::class)->name('product.')->prefix('product')->group(function () {
+            Route::get('/get-subcategories/{id}', 'getSubcategories')->name('get-subcategories');
+            Route::get('/get-attributeValue/{id}', 'getAttributeValue');
+            Route::get('/deleteGalleryImage/{id}', 'deleteGalleryImage')->name('deleteGalleryImage');
+            Route::get('/barCode/{id}', 'barCode')->name('barCode');
+            Route::post('/generate-barcode', 'generateBarcode')->name('generate.barcode');
+            Route::post('/print-barcode', 'printBarcode')->name('printBarcode');
+            Route::get('/getList/ajax', 'getList')->name('getList.ajax');
+            Route::get('/trash', 'trash')->name('trash');
+            Route::delete('/destroy/permanently/{id}', 'destroy_permanently')->name('destroy.permanently');
+            Route::delete('/restore/{id}', 'restore')->name('restore');
+            Route::post('/status/{id}', 'updateStatus')->name('status.update');
+            Route::post('/featured/{id}', 'updateFeatured')->name('featured.update');
+        });
+
+        // Profile Routes
+        Route::controller(ProfileController::class)->name('profile.')->prefix('profile')->group(function () {
+            Route::post('/profile_password/{profile}', 'profile_password')->name('password');
+        });
+
+
+        // Resource Controller
+        Route::resources([
+            'profile' => ProfileController::class,
+            'product' => ProductController::class,
+        ]);
+    });
+
+    require __DIR__ . '/frontend.php';
+    require __DIR__ . '/payment.php';

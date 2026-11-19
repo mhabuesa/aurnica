@@ -1,0 +1,327 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\CharityCategory;
+use App\Models\CharityContent;
+use App\Models\CharitySubcategory;
+use App\Models\Donation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+
+class CharityController extends Controller
+{
+    public function categoryIndex()
+    {
+        $categories = CharityCategory::orderBy('priority', 'asc')->get();
+        return view('backend.charity.category', compact('categories'));
+    }
+
+    public function storeCategory(Request $request)
+    {
+        $request->validate([
+            'category' => 'required|string|max:255|unique:charity_categories,category',
+        ]);
+
+        $maxPriority = CharityCategory::max('priority') ?? 0;
+        $priority = $maxPriority + 1;
+
+
+        $data = $request->all();
+        $data['priority'] = $priority;
+        $data['slug'] = Str::slug($request->category);
+
+        CharityCategory::create($data);
+
+        return redirect()->route('admin.charity.category.index')->with('success', 'Category Created Successfully');
+    }
+
+    public function updateCategory(Request $request)
+    {
+        $request->validate([
+            'category' => 'required|string|max:255|unique:charity_categories,category,' . $request->id,
+            'priority' => 'required|integer|min:0',
+            'slug' => 'required|string|max:255|unique:charity_categories,slug,' . $request->id,
+        ]);
+
+        $category = CharityCategory::findOrFail($request->id);
+        $category->update([
+            'category' => $request->category,
+            'priority' => $request->priority,
+            'slug' => $request->slug
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category updated successfully'
+        ]);
+    }
+
+    public function destroyCategory($id)
+    {
+        $category = CharityCategory::findOrFail($id);
+        $category->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category deleted successfully'
+        ]);
+    }
+
+    public function toggleStatusCategory($id)
+    {
+        $category = CharityCategory::findOrFail($id);
+        $category->update([
+            'status' => $category->status == 1 ? 0 : 1,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category status updated successfully'
+        ]);
+    }
+
+    public function subcategoryIndex()
+    {
+        $subcategories = CharitySubcategory::with('category')->orderBy('category_id')->orderBy('priority', 'asc')->get();
+        $categories = CharityCategory::where('status', '1')->get();
+        return view('backend.charity.subcategory', compact('subcategories', 'categories'));
+    }
+
+    public function storeSubcategory(Request $request)
+    {
+        $request->validate([
+            'category' => 'required',
+            'subcategory' => 'required|string|max:255|unique:charity_subcategories,subcategory',
+        ]);
+
+        $maxPriority = CharitySubcategory::max('priority') ?? 0;
+        $priority = $maxPriority + 1;
+
+        $slug = Str::slug($request->subcategory);
+
+        CharitySubcategory::create([
+            'category_id' => $request->category,
+            'subcategory' => $request->subcategory,
+            'slug' => $slug,
+            'priority' => $priority,
+        ]);
+
+        return redirect()->route('admin.charity.subcategory.index')->with('success', 'Subcategory Created Successfully');
+    }
+
+    public function updateSubcategory(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer|exists:charity_subcategories,id',
+            'category' => 'required|integer|exists:charity_categories,id',
+            'subcategory' => 'required|string|max:255|unique:charity_subcategories,subcategory,' . $request->id,
+            'priority' => 'required|integer',
+            'slug' => 'required|string|max:255|unique:charity_subcategories,slug,' . $request->id,
+        ]);
+
+        $subcategory = CharitySubcategory::findOrFail($request->id);
+
+        $subcategory->update([
+            'category_id' => $request->category,
+            'subcategory' => $request->subcategory,
+            'priority' => $request->priority,
+            'slug' => $request->slug,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Subcategory updated successfully',
+        ]);
+    }
+
+    public function destroySubcategory($id)
+    {
+        $subcategory = CharitySubcategory::findOrFail($id);
+        $subcategory->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Subcategory deleted successfully'
+        ]);
+    }
+
+    public function toggleStatusSubcategory($id)
+    {
+        $subcategory = CharitySubcategory::findOrFail($id);
+        $subcategory->update([
+            'status' => $subcategory->status == 1 ? 0 : 1,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Subcategory status updated successfully'
+        ]);
+    }
+
+
+    public function content()
+    {
+        $charityContents = CharityContent::orderBy('priority', 'asc')->get();
+        return view('backend.charity.content', [
+            'charityContents' => $charityContents,
+        ]);
+    }
+
+    public function content_create()
+    {
+        $categories = CharityCategory::where('status', '1')->get();
+        return view('backend.charity.content_create', [
+            'categories' => $categories,
+        ]);
+    }
+
+    public function getSubcategories(Request $request)
+    {
+        $request->validate([
+            'category_id' => 'required|integer|exists:charity_categories,id',
+        ]);
+
+        $subcategories = CharitySubcategory::where('category_id', $request->category_id)
+            ->where('status', 1)
+            ->orderBy('priority', 'asc')
+            ->get(['id', 'subcategory']);
+
+        return response()->json($subcategories);
+    }
+
+    public function contentStore(Request $request)
+    {
+        $request->validate([
+            'title' => 'required',
+            'category' => 'required|integer',
+            'subcategory' => 'required|integer',
+            'content' => 'required',
+        ]);
+
+        $maxPriority = CharityContent::max('priority') ?? 0;
+        $priority = $maxPriority + 1;
+
+        CharityContent::create([
+            'title' => $request->title,
+            'category_id' => $request->category,
+            'subcategory_id' => $request->subcategory,
+            'priority' => $priority,
+            'content' => $request->content,
+        ]);
+
+        return redirect()->route('admin.charity.content')->with('success', 'Content Saved Successfully');
+    }
+
+    public function content_edit($id)
+    {
+        $content = CharityContent::findOrFail($id);
+        $categories = CharityCategory::where('status', '1')->get();
+        return view('backend.charity.content_edit', [
+            'content' => $content,
+            'categories' => $categories,
+        ]);
+    }
+    public function updateContent(Request $request, $id)
+    {
+        $request->validate([
+            'title' => 'required',
+            'category' => 'required|integer',
+            'subcategory' => 'required|integer',
+            'priority' => 'required',
+            'content' => 'required',
+        ]);
+
+        $content = CharityContent::findOrFail($id);
+        $content->update([
+            'title' => $request->title,
+            'category_id' => $request->category,
+            'subcategory_id' => $request->subcategory,
+            'priority' => $request->priority,
+            'content' => $request->content,
+        ]);
+
+        return redirect()->route('admin.charity.content')->with('success', 'Content Saved Successfully');
+    }
+
+    public function destroyProduct($id)
+    {
+        $product = CharityContent::findOrFail($id);
+        $product->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Content deleted successfully'
+        ]);
+    }
+
+    public function donations()
+    {
+        $donations = Donation::all();
+        return view('backend.charity.donations', compact('donations'));
+    }
+
+    public function donors()
+    {
+        $donors = Donation::select(
+            'donor_phone',
+            // সাবকুয়েরি দিয়ে প্রথম ডোনেশনের নামটি বের করা হলো (created_at ASC অনুযায়ী)
+            DB::raw('(SELECT donor_name FROM donations as d2 WHERE d2.donor_phone = donations.donor_phone ORDER BY created_at ASC LIMIT 1) as donor_name'),
+            DB::raw('SUM(amount) as total_amount'),
+            DB::raw('COUNT(*) as total_donations')
+        )
+            ->whereNotNull('donor_phone')
+            ->where('donor_phone', '!=', '')
+            ->groupBy('donor_phone') // শুধু ফোন নাম্বার দিয়ে গ্রুপ করা হলো
+            ->orderByDesc('total_amount')
+            ->get();
+
+        return view('backend.charity.donors', compact('donors'));
+    }
+
+    public function donation_details($id)
+    {
+        $donation = Donation::findOrFail($id);
+        $purpose = $donation->purpose;
+        $subcatIds = collect($purpose)->pluck('subcategory_id');
+
+        $subcategories = CharitySubcategory::whereIn('id', $subcatIds)->get()->keyBy('id');
+        return view('backend.charity.donation_details', compact('donation', 'purpose', 'subcategories'));
+    }
+
+    public function donor_details($phone)
+    {
+        // ১. এই ফোন নাম্বারের ডোনারের সকল Successful/Paid ডোনেশন নিয়ে আসা
+        $donations = Donation::where('donor_phone', $phone)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        if ($donations->isEmpty()) {
+            abort(404, 'Donor not found or has no donations');
+        }
+
+        // ২. ডোনারের ইনফরমেশন ও টোটাল ডোনেশন হিসাব করা
+        $donorInfo = [
+            'name' => $donations->first()->donor_name,
+            'phone' => $phone,
+            'total_amount' => $donations->sum('amount'),
+            'total_donations' => $donations->count(),
+        ];
+
+        // ৩. সকল ডোনেশনের JSON purpose থেকে subcategory_id গুলো সংগ্রহ করা
+        $subcatIds = collect();
+        foreach ($donations as $donation) {
+            $purpose = is_string($donation->purpose) ? json_decode($donation->purpose, true) : $donation->purpose;
+            if (is_array($purpose)) {
+                $ids = collect($purpose)->pluck('subcategory_id');
+                $subcatIds = $subcatIds->merge($ids);
+            }
+        }
+
+        // ৪. Subcategory এর নামগুলো ফেচ করে ID দিয়ে Key করা
+        $subcategories = CharitySubcategory::whereIn('id', $subcatIds->unique())->get()->keyBy('id');
+
+        return view('backend.charity.donor_details', compact('donorInfo', 'donations', 'subcategories'));
+    }
+}
