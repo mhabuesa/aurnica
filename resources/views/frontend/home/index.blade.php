@@ -323,22 +323,6 @@
     <div class="container">
         <!-- Main Offer Cards -->
         <div class="home-main-offers row g-2 g-md-3 justify-content-center">
-            <div class="col-6 col-md-6 col-xl-3">
-                <a href="{{ route('sunnah.products') }}"
-                    class="promo-card-main d-flex align-items-center p-3 text-decoration-none">
-                    <div class="promo-icon-wrapper mr-3">
-                        <img src="{{ asset('frontend/assets/images/bag.png') }}" alt="Shopping" class="img-fluid rounded"
-                            style="width: 60px; height: 60px; object-fit: cover;">
-                    </div>
-                    <div class="promo-content">
-                        <h6 class="mb-1 text-gray-90 font-weight-bold">সুন্নাহ কেনাকাটা</h6>
-                        <p class="mb-0 text-gray-50 font-size-12">
-                            সুন্নাহসম্মত জীবনযাপনের নিত্যপ্রয়োজনীয় সামগ্রী।
-                        </p>
-                    </div>
-                </a>
-            </div>
-
             {{-- First 3 offers --}}
             @foreach ($offers->take(3) as $promo)
                 <div class="col-6 col-md-6 col-xl-3">
@@ -466,9 +450,9 @@
         <!-- Category Slider -->
         <div class="home-category-slider">
             <div class="home-category-header d-flex justify-content-between align-items-center mb-0">
-                <h3 class="section-title section-title__full mb-0 font-size-22">ক্যাটাগরি অনুযায়ী কেনাকাটা</h3>
+                <h3 class="section-title section-title__full mb-0 font-size-22">Shop By Category</h3>
                 <a href="{{ route('products') }}" class="d-block text-gray-16 text-decoration-none">
-                    সব দেখুন <i class="ec ec-arrow-right-categproes"></i>
+                    See More <i class="ec ec-arrow-right-categproes"></i>
                 </a>
             </div>
             <div class="js-slick-carousel u-slick category-carousel pb-0" data-slides-show="10" data-slides-scroll="1"

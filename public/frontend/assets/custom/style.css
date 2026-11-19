@@ -1,23 +1,3 @@
-@font-face {
-    font-family: "SolaimanLipi";
-    src: url("/assets/fonts/bangla/SolaimanLipi.ttf") format("truetype");
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-body,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-.font-weight-bold,
-.section-title {
-    font-family: "Open Sans", "SolaimanLipi", sans-serif;
-}
-
 .search_product li img {
     width: 30px;
     margin-right: 5px;
@@ -1187,7 +1167,7 @@ body.search-drawer-open {
 }
 
 .search-input-wrapper:focus-within {
-    border-color: #0d3123 !important;
+    border-color: #dc3545 !important;
     box-shadow: 0 0 0 3px rgba(233, 155, 38, 0.12);
 }
 
@@ -1224,7 +1204,7 @@ body.search-drawer-open {
     padding: 0 15px;
     border: 0;
     border-radius: 6px;
-    background: #0d3123 !important;
+    background: #dc3545 !important;
     color: #fff;
     font-size: 13px;
     font-weight: 600;
@@ -1235,7 +1215,7 @@ body.search-drawer-open {
 }
 
 .search-submit-btn:hover {
-    background: #0d3123 !important;
+    background: #dc3545 !important;
     color: #fff;
 }
 
@@ -1379,7 +1359,7 @@ body.search-drawer-open {
 .product-price-custom {
     font-size: 18px;
     font-weight: 700;
-    color: #103b2b;
+    color: #dc3545;
     margin-top: auto; /* Price & Button-কে কার্ডের নিচে টেনে নিয়ে যাবে */
     margin-bottom: 12px;
     min-height: 27px;
@@ -1394,8 +1374,8 @@ body.search-drawer-open {
 .product-cart-custom .btn {
     width: 100%;
     min-height: 40px;
-    background-color: #103b2b;
-    border-color: #103b2b !important;
+    background-color: #dc3545;
+    border-color: #dc3545 !important;
     font-weight: 600;
     font-size: 15px;
     border-radius: 6px !important;
@@ -1450,7 +1430,7 @@ body.search-drawer-open {
 .chat-main-btn {
     width: 48px;
     height: 48px;
-    background-color: rgb(5, 77, 55);
+    background-color: #dc3545;
     color: #fff;
     border: none;
     border-radius: 50% 50% 20% 50%;
@@ -1513,8 +1493,6 @@ body.search-drawer-open {
 .chat-option-btn.whatsapp {
     background-color: #25d366; /* WhatsApp Green */
 }
-
-
 
 .custom-scroll-top {
     position: fixed;
@@ -1580,5 +1558,125 @@ body.search-drawer-open {
 
     .custom-scroll-top {
         display: none !important;
+    }
+}
+
+/* Category */
+
+.all-cat-mega-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 82vw; /* Proyojon moto adjust korte paren, jemon 900px ba 1100px */
+    max-width: 1200px;
+    max-height: 75vh;
+    overflow-y: auto;
+    z-index: 1050;
+}
+
+.all-cat-card {
+    border-color: #ececec !important;
+    transition:
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.all-cat-card:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.all-cat-title {
+    font-size: 15px;
+    color: #222;
+}
+
+.all-cat-img-box {
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.all-cat-img {
+    max-height: 105px;
+    width: auto;
+    object-fit: contain;
+}
+
+.all-cat-sublink {
+    font-size: 13px;
+    color: #6c757d !important;
+    transition: color 0.15s ease;
+}
+
+.all-cat-sublink:hover {
+    color: #111 !important;
+}
+
+.all-cat-view-all {
+    font-size: 13px;
+    color: #111;
+}
+
+.all-cat-view-all:hover {
+    text-decoration: underline !important;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 991px) {
+    .all-cat-mega-panel {
+        position: static;
+        width: 100%;
+        max-height: none;
+    }
+}
+
+/* Custom Slim Scrollbar for All Categories Mega Panel */
+.all-cat-mega-panel {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #cbd5e1 #f8f9fa; /* thumb track */
+}
+
+.all-cat-mega-panel::-webkit-scrollbar {
+    width: 6px; /* Scrollbar-er chawra */
+    height: 6px;
+}
+
+.all-cat-mega-panel::-webkit-scrollbar-track {
+    background: #f8f9fa; /* Track-er halka color */
+    border-radius: 10px;
+}
+
+.all-cat-mega-panel::-webkit-scrollbar-thumb {
+    background: #cbd5e1; /* Thumb-er default color */
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+
+.all-cat-mega-panel::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8; /* Hover korle ektu dark hobe */
+}
+
+#stickyNavBar {
+    transition: all 0.3s ease-in-out;
+    width: 100%;
+    z-index: 1040;
+}
+
+#stickyNavBar.is-sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+    animation: slideDown 0.3s ease-in-out forwards;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
     }
 }

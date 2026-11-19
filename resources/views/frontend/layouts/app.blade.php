@@ -48,9 +48,6 @@
     <link rel="stylesheet" href="{{ asset_v('frontend/assets/css/theme.css') }}">
     <link rel="stylesheet" href="{{ asset_v('frontend/assets/custom/style.css') }}">
 
-    <!-- Notyf CSS -->
-    {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css"> --}}
-
     @stack('header_script')
 
     <style>
@@ -170,9 +167,9 @@
     <a class="custom-scroll-top" href="#" id="scrollTopBtn">
         <svg class="progress-svg" width="50" height="50" viewBox="0 0 50 50">
             <!-- ভেতরের সলিড অরেঞ্জ গোল বৃত্ত -->
-            <circle cx="25" cy="25" r="20" fill="#0d3123"></circle>
+            <circle cx="25" cy="25" r="20" fill="#DC3545"></circle>
             <!-- চারপাশের প্রোগ্রেস রিং (যা স্ক্রোল করলে ফিল হবে) -->
-            <circle class="progress-ring__bar" cx="25" cy="25" r="23" fill="none" stroke="#0d3123"
+            <circle class="progress-ring__bar" cx="25" cy="25" r="23" fill="none" stroke="#DC3545"
                 stroke-width="3" stroke-dasharray="144.5" stroke-dashoffset="144.5"></circle>
         </svg>
         <!-- ওপরের দিকে যাওয়ার অ্যারো আইকন -->
@@ -188,8 +185,7 @@
                 title="Messenger">
                 <i class="fa-brands fa-facebook-messenger fa-lg"></i>
             </a>
-            <a href="https://wa.me/+8801755738100" target="_blank" class="chat-option-btn whatsapp"
-                title="WhatsApp">
+            <a href="https://wa.me/+8801706944396" target="_blank" class="chat-option-btn whatsapp" title="WhatsApp">
                 <i class="fa-brands fa-whatsapp fa-lg"></i>
             </a>
         </div>
@@ -618,6 +614,23 @@
                 }
             });
 
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const stickyNav = document.getElementById("stickyNavBar");
+            if (!stickyNav) return;
+
+            const navTop = stickyNav.offsetTop;
+
+            window.addEventListener("scroll", function() {
+                if (window.scrollY > navTop) {
+                    stickyNav.classList.add("is-sticky");
+                } else {
+                    stickyNav.classList.remove("is-sticky");
+                }
+            });
         });
     </script>
 

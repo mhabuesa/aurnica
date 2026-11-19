@@ -390,7 +390,7 @@
                                                         <td colspan="5" class="text-center py-5">
                                                             <div class="no-product-found mx-auto text-center"
                                                                 style="max-width: 400px;">
-                                                                <img src="{{ asset('frontend') }}/assets/images/cartEmpty.png"
+                                                                <img src="{{ asset('frontend') }}/assets/images/emptyBox.png"
                                                                     alt="Empty Cart" class="img-fluid mb-4"
                                                                     style="opacity: 0.7; max-height: 180px;">
                                                                 <h4 class="font-weight-bold mb-2">Your cart is currently
