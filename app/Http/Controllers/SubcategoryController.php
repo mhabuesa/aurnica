@@ -4,14 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Subcategory;
-use Illuminate\Support\Str;
+use App\Traits\ImageSaveTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class SubcategoryController extends Controller
 {
+    use ImageSaveTrait;
 
     public function index()
     {
@@ -23,9 +25,11 @@ class SubcategoryController extends Controller
 
     public function store(Request $request)
     {
+
         $request->validate([
             'category' => 'required',
             'subcategory_name' => 'required|unique:subcategories,name|max:255',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         //Slug Generation
@@ -34,12 +38,19 @@ class SubcategoryController extends Controller
         // Priority Generation
         $priority = Subcategory::max('priority') + 1;
 
+        $logoPath = null;
+
+        if ($request->logo) {
+            $logoPath = $this->saveImage('subcategory', $request->file('logo'));
+        }
+
         // Store the subcategory in the database
         Subcategory::create([
             'category_id' => $request->category,
             'name' => $request->subcategory_name,
-            'slug' => $slug,
-            'priority' => $priority,
+            'slug' =>  $slug,
+            'priority' =>  $priority,
+            'logo' => $logoPath,
         ]);
 
         return redirect()->route('admin.subcategory.index')->with('success', 'Subcategory added successfully.');
@@ -51,6 +62,7 @@ class SubcategoryController extends Controller
         $subcategory = Subcategory::findOrFail($id);
 
         try {
+            $this->deleteImage(public_path($subcategory->logo));
             // Delete subcategory
             $subcategory->delete();
         } catch (\Exception $e) {
@@ -77,26 +89,33 @@ class SubcategoryController extends Controller
         return response()->json(['success' => true, 'message' => 'Subcategory status Updated Successfully'], 200);
     }
 
-        public function updateAjax(Request $request)
+    public function updateAjax(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:subcategories,name,' . $request->id,
             'slug' => 'required|unique:subcategories,slug,' . $request->id,
-            'priority' => 'required|integer'
+            'priority' => 'required|integer',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         // Return the validation errors
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ]);
+            return response()->json(['errors' => $validator->errors()]);
         }
 
-        // Update the subcategory
         $subcategory = Subcategory::findOrFail($request->id);
+
+       if ($request->hasFile('logo')) {
+            if (! empty($subcategory->logo)) {
+                $this->deleteImage(public_path($subcategory->logo));
+            }
+            $logo = $this->saveImage('subcategory', $request->file('logo'));
+        }
+        // Update the subcategory
         $subcategory->update([
             'name' => $request->name,
             'slug' => $request->slug,
+            'logo' => isset($logo) ? $logo : $subcategory->logo,
             'priority' => $request->priority,
         ]);
 
