@@ -12,6 +12,7 @@ use App\Models\ProductGallery;
 use App\Models\ProductMeta;
 use App\Models\ProductVariation;
 use App\Models\Subcategory;
+use App\Models\Subsubcategory;
 use App\Traits\ImageSaveTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -111,6 +112,19 @@ class ProductController extends Controller
 
         return response()->json($subcategories);
     }
+
+    public function getSubSubcategories($id)
+    {
+        $subsubcategories = Subsubcategory::where('subcategory_id', $id)
+            ->where('status', 1) // active gula nite chaile
+            ->orderBy('priority', 'asc')
+            ->orderBy('name', 'asc')
+            ->get(['id', 'name']);
+
+        return response()->json($subsubcategories);
+    }
+
+
     public function getAttributeValue($id)
     {
         $attributeValue = AttributeValue::where('attribute_id', $id)->get();
@@ -129,7 +143,6 @@ class ProductController extends Controller
             'category' => 'required',
             'image' => 'required',
         ]);
-
 
 
         // Sku Generation
@@ -154,6 +167,7 @@ class ProductController extends Controller
             'description' => $request->description,
             'category_id' => $request->category,
             'subcategory_id' => $request->subcategory,
+            'subsubcategory_id' => $request->subsubcategory,
             'brand_id' => $request->brand,
             'sku' => $sku,
             'price' => $request->unit_price,
@@ -298,6 +312,7 @@ class ProductController extends Controller
             'description' => $request->description,
             'category_id' => $request->category,
             'subcategory_id' => $request->subcategory,
+            'subsubcategory_id' => $request->subsubcategory,
             'brand_id' => $request->brand,
             'sku' => $sku,
             'price' => $request->unit_price,

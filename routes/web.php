@@ -1,39 +1,40 @@
     <?php
 
-    use App\Http\Controllers\AdminAuthController;
-    use App\Http\Controllers\Auth\AuthenticatedSessionController;
-    use App\Http\Controllers\BannerController;
-    use App\Http\Controllers\BlogController;
-    use App\Http\Controllers\BrandController;
-    use App\Http\Controllers\CampaignController;
-    use App\Http\Controllers\CategoryController;
-    use App\Http\Controllers\CharityController;
-    use App\Http\Controllers\CouponController;
-    use App\Http\Controllers\CustomerController;
-    use App\Http\Controllers\DeliveryController;
-    use App\Http\Controllers\FeaturedProductController;
-    use App\Http\Controllers\HomeController;
-    use App\Http\Controllers\LandingController;
-    use App\Http\Controllers\OfferController;
-    use App\Http\Controllers\OrderController;
-    use App\Http\Controllers\PagesController;
-    use App\Http\Controllers\PosController;
-    use App\Http\Controllers\ProductController;
-    use App\Http\Controllers\ProfileController;
-    use App\Http\Controllers\SettingController;
-    use App\Http\Controllers\SmsCampaignController;
-    use App\Http\Controllers\SmsController;
-    use App\Http\Controllers\SslCommerzPaymentController;
-    use App\Http\Controllers\SubcategoryController;
-    use App\Http\Controllers\SubSubcategoryController;
-    use App\Http\Controllers\SunnahShoppingController;
-    use App\Http\Controllers\TestController;
-    use App\Http\Controllers\TodayDealController;
-    use App\Http\Controllers\TodaysDealController;
-    use App\Http\Controllers\TransactionController;
-    use App\Http\Controllers\UserController;
-    use App\Http\Controllers\VariationController;
-    use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\BannerController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CampaignController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CharityController;
+use App\Http\Controllers\CouponController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\FeaturedProductController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LandingController;
+use App\Http\Controllers\NavMenuController;
+use App\Http\Controllers\OfferController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PagesController;
+use App\Http\Controllers\PosController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SmsCampaignController;
+use App\Http\Controllers\SmsController;
+use App\Http\Controllers\SslCommerzPaymentController;
+use App\Http\Controllers\SubcategoryController;
+use App\Http\Controllers\SubSubcategoryController;
+use App\Http\Controllers\SunnahShoppingController;
+use App\Http\Controllers\TestController;
+use App\Http\Controllers\TodayDealController;
+use App\Http\Controllers\TodaysDealController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\VariationController;
+use Illuminate\Support\Facades\Route;
 
     Route::controller(AdminAuthController::class)->prefix('admin')->name('admin.')->group(function () {
         Route::get('/login', 'create')->name('login');
@@ -232,6 +233,15 @@
             Route::post('/product_assign/{id}', 'product_assign_store')->name('product.store');
             Route::delete('/product/destroy/{id}', 'product_destroy')->name('product.destroy');
         });
+        
+        //Navigation Menu Routes
+        Route::controller(NavMenuController::class)->name('navMenu.')->prefix('navMenu')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/category/store', 'category_store')->name('category.store');
+            Route::post('/category/status/update/{id}', 'category_status_update')->name('category.status.update');
+            Route::delete('/category.destroy/{id}', 'category_destroy')->name('category.destroy');
+            Route::get('/product', 'navMenu_product')->name('product');
+        });
 
         //Coupon Routes
         Route::controller(CouponController::class)->name('coupon.')->prefix('coupon')->group(function () {
@@ -358,6 +368,7 @@
         // Product Routes
         Route::controller(ProductController::class)->name('product.')->prefix('product')->group(function () {
             Route::get('/get-subcategories/{id}', 'getSubcategories')->name('get-subcategories');
+            Route::get('/get-subsubcategories/{id}', 'getSubSubcategories')->name('get-subsubcategories');
             Route::get('/get-attributeValue/{id}', 'getAttributeValue');
             Route::get('/deleteGalleryImage/{id}', 'deleteGalleryImage')->name('deleteGalleryImage');
             Route::get('/barCode/{id}', 'barCode')->name('barCode');

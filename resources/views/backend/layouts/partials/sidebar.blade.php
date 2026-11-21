@@ -235,6 +235,15 @@
                     </i> Promotion management
                 </li>
                 <li class="nav-main-item">
+                    <a class="nav-main-link {{ request()->routeIs('admin.navMenu.*') ? 'active' : '' }}"
+                        href="{{ route('admin.navMenu.index') }}">
+                        <span class="nav-main-link-name">
+                            <i class="fa-solid fa-bars-staggered me-2"></i>
+                            Navigation Menu
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-main-item">
                     <a class="nav-main-link {{ request()->routeIs('admin.banner.*') ? 'active' : '' }}"
                         href="{{ route('admin.banner.index') }}">
                         <span class="nav-main-link-name">

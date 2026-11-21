@@ -82,10 +82,21 @@
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="mb-3">
-                                        <label class="form-label" for="subcategory">Sub Category</label>
+                                        <label class="form-label" for="subcategory">Subcategory</label>
                                         <select class="js-select2 form-select" id="subcategory" name="subcategory"
-                                            style="width: 100%;" data-placeholder="Choose Sub Category  ..">
+                                            style="width: 100%;" data-placeholder="Choose Sub Category  .."
+                                            data-selectedsubcategory="{{ $product->subcategory_id ?? '' }}">
                                             <option value="">Select Sub Category</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="subsubcategory">Sub Subcategory</label>
+                                        <select class="js-select2 form-select" id="subsubcategory" name="subsubcategory"
+                                            style="width: 100%;" data-placeholder="Choose Sub Subcategory  .."
+                                            data-selectedsubsubcategory="{{ $product->subsubcategory_id ?? '' }}">
+                                            <option value="">Select Sub Subcategory</option>
                                         </select>
                                     </div>
                                 </div>
@@ -101,21 +112,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-lg-3">
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between">
-                                            <label class="form-label" for="barcodeInput">SKU <i
-                                                    class="fas fa-info-circle js-bs-tooltip-enabled"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    title="Create a unique product code by clicking on the “Generate Code” button"></i></label>
 
-                                            <a href="javascript:void(0)" id="generate_code" class="text-end">Generate
-                                                Code</a>
-                                        </div>
-                                        <input type="text" class="form-control barcode_input" id="barcodeInput"
-                                            name="sku" autocomplete="off" placeholder="Enter Product SKU..">
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -127,9 +124,10 @@
                         <div class="block-header block-header-default">
                             <h3 class="block-title text-capitalize">Pricing & others</h3>
                         </div>
-                        <div class="block-content block-content-full overflow-x-auto">
+                        <div id="baseValue" class="block-content block-content-full overflow-x-auto"
+                            style="display: block;">
                             <div class="row">
-                                <div class="col-lg-3 m-auto">
+                                <div class="col-lg-2 m-auto">
                                     <div class="mb-3">
                                         <label class="form-label" for="category">Unit Price
                                             <i class="fas fa-info-circle js-bs-tooltip-enabled" data-bs-toggle="tooltip"
@@ -140,7 +138,7 @@
                                             placeholder="Unit Price..">
                                     </div>
                                 </div>
-                                <div class="col-lg-3 m-auto">
+                                <div class="col-lg-2 m-auto">
                                     <div class="mb-3">
                                         <label class="form-label" for="current_stock">Current stock qty
                                             <i class="fas fa-info-circle js-bs-tooltip-enabled" data-bs-toggle="tooltip"
@@ -151,7 +149,7 @@
                                             name="current_stock" value="0">
                                     </div>
                                 </div>
-                                <div class="col-lg-3 m-auto">
+                                <div class="col-lg-2 m-auto">
                                     <div class="mb-3">
                                         <label class="form-label" for="discount_type">Discount Type
                                             <i class="fas fa-info-circle js-bs-tooltip-enabled" data-bs-toggle="tooltip"
@@ -164,7 +162,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 m-auto">
+                                <div class="col-lg-2 m-auto">
                                     <div class="mb-3">
                                         <label class="form-label" for="discount">Discount Amount
                                             <i class="fas fa-info-circle js-bs-tooltip-enabled" data-bs-toggle="tooltip"
@@ -173,6 +171,21 @@
                                         </label>
                                         <input type="number" class="form-control" id="discount" name="discount"
                                             value="0">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between">
+                                            <label class="form-label" for="barcodeInput">SKU <i
+                                                    class="fas fa-info-circle js-bs-tooltip-enabled"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                                    title="Create a unique product code by clicking on the “Generate Code” button"></i></label>
+
+                                            <a href="javascript:void(0)" id="generate_code" class="text-end">Generate
+                                                Code</a>
+                                        </div>
+                                        <input type="text" class="form-control barcode_input" id="barcodeInput"
+                                            name="sku" placeholder="Enter Product SKU..">
                                     </div>
                                 </div>
                             </div>
@@ -506,9 +519,6 @@
                 clearTimeout(typingTimer);
                 typingTimer = setTimeout(() => barcode = '', 500);
             });
-
-            // OPTIONAL: focus hidden input always to capture scan
-            barcodeInput.focus();
         });
     </script>
 @endpush

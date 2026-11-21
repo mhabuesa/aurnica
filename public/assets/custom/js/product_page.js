@@ -15,37 +15,108 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-// Get Subcategories
-let productSubcategoryId = $('#subcategory').data('selectedsubcategory');
-
-$('#category').on('change', function () {
-
-    let categoryId = $(this).val();
-    let subcategory = $('#subcategory');
-
-    subcategory.html('<option value="">Loading...</option>');
-
-    fetch('/admin/product/get-subcategories/' + categoryId)
-        .then(response => response.json())
-        .then(data => {
-
-            let options = '<option value="">Select Sub Category</option>';
-
-            data.forEach(function (item) {
-
-                let selected = item.id == productSubcategoryId ? 'selected' : '';
-
-                options += `<option value="${item.id}" ${selected}>${item.name}</option>`;
-            });
-
-            subcategory.html(options);
-
-        });
-
-});
+// Get Subcategories & Sub Subcategories (Cascading AJAX)
 $(document).ready(function () {
-    $('#category').trigger('change');
+    const categorySelect = $('#category');
+    const subcategorySelect = $('#subcategory');
+    const subsubcategorySelect = $('#subsubcategory');
+
+    const selectedSubcategoryId = subcategorySelect.data('selectedsubcategory') || '';
+    const selectedSubsubcategoryId = subsubcategorySelect.data('selectedsubsubcategory') || '';
+
+    function setSelectOptions($select, placeholder, items = [], selectedId = '') {
+        let options = `<option value="">${placeholder}</option>`;
+
+        if (Array.isArray(items) && items.length > 0) {
+            items.forEach(function (item) {
+                let isSelected = (selectedId && String(item.id) === String(selectedId)) ? 'selected' : '';
+                options += `<option value="${item.id}" ${isSelected}>${item.name}</option>`;
+            });
+        }
+
+        $select.html(options);
+        if ($select.hasClass('select2-hidden-accessible')) {
+            $select.trigger('change.select2');
+        }
+    }
+
+    function loadSubcategories(categoryId, preselectSubId = '', preselectSubSubId = '') {
+        // Category change hole sub-subcategory age reset hobe
+        setSelectOptions(subsubcategorySelect, 'Select Sub Subcategory', [], '');
+
+        if (!categoryId) {
+            setSelectOptions(subcategorySelect, 'Select Sub Category', [], '');
+            return;
+        }
+
+        setSelectOptions(subcategorySelect, 'Loading...', [], '');
+
+        fetch('/admin/product/get-subcategories/' + encodeURIComponent(categoryId))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch subcategories');
+                }
+                return response.json();
+            })
+            .then(data => {
+                setSelectOptions(subcategorySelect, 'Select Sub Category', data, preselectSubId);
+
+                if (preselectSubId) {
+                    loadSubSubcategories(preselectSubId, preselectSubSubId);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching subcategories:', error);
+                setSelectOptions(subcategorySelect, 'Select Sub Category', [], '');
+            });
+    }
+
+    function loadSubSubcategories(subcategoryId, preselectSubSubId = '') {
+        if (!subcategoryId) {
+            setSelectOptions(subsubcategorySelect, 'Select Sub Subcategory', [], '');
+            return;
+        }
+
+        setSelectOptions(subsubcategorySelect, 'Loading...', [], '');
+
+        fetch('/admin/product/get-subsubcategories/' + encodeURIComponent(subcategoryId))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch sub-subcategories');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Sub-subcategory na thakle shudhu placeholder thakbe
+                setSelectOptions(subsubcategorySelect, 'Select Sub Subcategory', data, preselectSubSubId);
+            })
+            .catch(error => {
+                console.error('Error fetching sub-subcategories:', error);
+                setSelectOptions(subsubcategorySelect, 'Select Sub Subcategory', [], '');
+            });
+    }
+
+    // Category change event
+    categorySelect.on('change', function () {
+        let categoryId = $(this).val();
+        loadSubcategories(categoryId);
+    });
+
+    // Subcategory change event
+    subcategorySelect.on('change', function () {
+        let subcategoryId = $(this).val();
+        loadSubSubcategories(subcategoryId);
+    });
+
+    // Edit page-e age theke category & subcategory thakle auto load
+    if (categorySelect.val()) {
+        loadSubcategories(categorySelect.val(), selectedSubcategoryId, selectedSubsubcategoryId);
+    }
 });
+
+// $(document).ready(function () {
+//     $('#category').trigger('change');
+// });
 
 $(document).ready(function () {
 
@@ -129,14 +200,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const toggle = document.getElementById("status");
     const variationBody = document.getElementById("variationBody");
+    const baseValue = document.getElementById("baseValue");
 
     toggle.addEventListener("change", function () {
 
         if (this.checked) {
             variationBody.style.display = "block";
+            baseValue.style.display = "none";
         } else {
             variationBody.style.display = "none";
+            baseValue.style.display = "block";
         }
+        
     });
 });
 
