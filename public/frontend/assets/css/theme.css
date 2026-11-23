@@ -99,7 +99,7 @@ body {
     line-height: 1.8;
     color: #333e48;
     text-align: left;
-    background-color: #FDFDF3;
+    background-color: #ffffff;
 }
 
 [tabindex="-1"]:focus {
@@ -21595,7 +21595,7 @@ button:focus {
 .u-header__section {
     position: relative;
     z-index: 1;
-    background-color: #fdfdf3;
+    background-color: #ffffff;
     box-shadow: 0 1px 10px rgba(151, 164, 175, 0.1);
 }
 

@@ -149,105 +149,266 @@
             line-height: 1.1;
         }
 
-        /* Fixed Category Section Styles */
-        .home-category-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #fdfbf7;
-            padding-bottom: 10px;
+
+        /* Category Section */
+        /* Container & Wrapper */
+        .home-category-slider-wrapper {
+            background: linear-gradient(180deg, #fff7f8 0%, #fffdfd 100%);
+            border-radius: 22px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(225, 29, 72, 0.04);
         }
 
+        /* Header */
         .home-category-header h3 {
-            color: #2c3e50;
+            color: #111827;
+            font-size: 22px;
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             margin-bottom: 0;
-            position: relative;
+        }
+        .home-category-header {
+            margin-bottom: 15px;
         }
 
-        .home-category-header h3::after {
-            content: '';
-            position: absolute;
-            bottom: -12px;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background-color: #1a5d1a;
-            /* Dark Green underline */
-            border-radius: 2px;
+        .title-bar {
+            display: inline-block;
+            width: 4px;
+            height: 22px;
+            background-color: #e11d48;
+            border-radius: 4px;
         }
 
-        .category-carousel {
-            padding: 10px 0;
-        }
-
-        .category-item {
-            display: block;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            color: inherit;
-            outline: none;
-        }
-
-        .category-img-wrapper {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 10px;
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px;
-            background: #fdfbf7;
-            border: 1px solid #efebe4;
-        }
-
-        .category-img-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.3s ease;
-        }
-
-        .category-name {
-            display: block;
+        .view-all-btn {
+            background: #ffffff;
+            color: #e11d48;
+            border: 1px solid #ffe4e6;
             font-size: 13px;
-            font-weight: 500;
-            color: #4a5568;
-            line-height: 1.2;
-            text-align: center;
+            font-weight: 600;
+            padding: 7px 16px;
+            border-radius: 999px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 8px rgba(225, 29, 72, 0.06);
         }
 
-        .category-item:hover {
+        .view-all-btn:hover {
+            background: #e11d48;
+            color: #ffffff;
+            border-color: #e11d48;
+            text-decoration: none;
+        }
+
+        /* Desktop Grid: 6 columns x 2 rows = 12 items, no scroll */
+        .category-desktop-grid {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .category-mobile-wrapper {
+            display: none;
+        }
+
+        /* Category Card */
+        .category-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            border: 1px solid #f7e6e9;
+            border-radius: 18px;
+            padding: 18px 10px;
+            height: 175px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .category-card:hover {
             transform: translateY(-3px);
+            border-color: #fecdd3;
+            box-shadow: 0 8px 18px rgba(225, 29, 72, 0.07);
+            text-decoration: none;
         }
 
-        .category-item:hover .category-img-wrapper img {
-            transform: scale(1.1);
+        /* Circular Image Background */
+        .category-img-circle-wrapper {
+            width: 86px;
+            height: 86px;
+            border-radius: 50%;
+            background-color: #fff6f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            padding: 10px;
+            transition: transform 0.25s ease;
         }
 
-        .category-item:hover .category-name {
-            color: #1a5d1a;
+        .category-img-circle-wrapper img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
 
-        @media (max-width: 576px) {
-            .category-img-wrapper {
-                width: 50px;
-                height: 50px;
+        .category-card:hover .category-img-circle-wrapper {
+            transform: scale(1.05);
+        }
+
+        /* Category Name */
+        .category-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1f2937;
+            text-align: center;
+            line-height: 1.25;
+        }
+
+        /* Mobile View: Hide desktop grid, show 3x2 grid per slide */
+        @media (max-width: 767.98px) {
+            .category-desktop-grid {
+                display: none;
             }
 
-            .category-name {
+            .category-mobile-wrapper {
+                display: block;
+            }
+
+            .home-category-slider-wrapper {
+                padding: 18px 12px 18px;
+                border-radius: 20px;
+            }
+
+            .home-category-header  {
+                margin-bottom: 20px !important;
+            }
+            .home-category-header h3 {
+                font-size: 18px;
+            }
+
+            .title-bar {
+                height: 18px;
+            }
+
+            .view-all-btn {
+                font-size: 12px;
+                padding: 6px 14px;
+            }
+
+            /* 3 columns x 2 rows = 6 items per slide */
+            .category-mobile-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                grid-template-rows: repeat(2, auto);
+                gap: 10px;
+                padding: 2px;
+            }
+
+            .category-mobile-grid .category-card {
+                height: 128px;
+                padding: 10px 6px;
+                border-radius: 16px;
+            }
+
+            .category-mobile-grid .category-img-circle-wrapper {
+                width: 56px;
+                height: 56px;
+                padding: 6px;
+                margin-bottom: 8px;
+            }
+
+            .category-mobile-grid .category-name {
                 font-size: 11px;
+                font-weight: 600;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
             }
 
-            .home-category-slider {
-                padding: 15px 10px;
+            /* Dots styling */
+            .category-carousel-mobile .slick-dots,
+            .category-carousel-mobile .u-slick__pagination {
+                position: static !important;
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                margin-top: 14px !important;
+                padding: 0;
+                list-style: none;
             }
 
-            .category-item {
-                height: 80px;
+            .category-carousel-mobile .slick-dots li,
+            .category-carousel-mobile .u-slick__pagination li {
+                width: auto !important;
+                height: auto !important;
+                margin: 0 !important;
+            }
+
+            .category-carousel-mobile .slick-dots li button,
+            .category-carousel-mobile .u-slick__pagination li span {
+                display: block !important;
+                width: 8px !important;
+                height: 8px !important;
+                padding: 0 !important;
+                border: 0 !important;
+                border-radius: 999px !important;
+                background-color: #d1d5db !important;
+                text-indent: -9999px !important;
+                overflow: hidden;
+                transition: all 0.25s ease;
+            }
+
+            .category-carousel-mobile .slick-dots li.slick-active button,
+            .category-carousel-mobile .u-slick__pagination li.slick-active span {
+                width: 22px !important;
+                background-color: #e11d48 !important;
+            }
+
+            .category-carousel-mobile {
+                overflow: hidden;
+            }
+
+            .category-carousel-mobile .slick-list {
+                overflow: hidden !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .category-carousel-mobile .slick-track {
+                display: flex !important;
+                align-items: stretch;
+            }
+
+            .category-carousel-mobile .slick-slide {
+                float: none !important;
+                height: auto !important;
+                box-sizing: border-box;
+            }
+
+            .category-carousel-mobile .slick-slide>div {
+                width: 100%;
+                min-width: 0;
+                padding: 2px;
+                box-sizing: border-box;
+            }
+
+            .category-mobile-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                grid-template-rows: repeat(2, auto);
+                gap: 10px;
+                width: 100%;
+                min-width: 0;
             }
         }
+
+
+
 
         /* Mobile responsive coupon copy button */
         .copy-coupon-btn {
@@ -446,42 +607,67 @@
         @endif
 
     </div>
-    <div class="container mt-3">
-        <!-- Category Slider -->
-        <div class="home-category-slider">
-            <div class="home-category-header d-flex justify-content-between align-items-center mb-0">
-                <h3 class="section-title section-title__full mb-0 font-size-22">Shop By Category</h3>
-                <a href="{{ route('products') }}" class="d-block text-gray-16 text-decoration-none">
-                    See More <i class="ec ec-arrow-right-categproes"></i>
+
+
+    <div class="container my-4">
+        <div class="home-category-slider-wrapper">
+            <!-- Header -->
+            <div class="home-category-header d-flex justify-content-between align-items-center mb-3 mb-md-4">
+                <h3 class="section-title mb-0">
+                    <span class="title-bar"></span> Shop by Category
+                </h3>
+                <a href="{{ route('products') }}" class="view-all-btn">
+                    View all &rarr;
                 </a>
             </div>
-            <div class="js-slick-carousel u-slick category-carousel pb-0" data-slides-show="10" data-slides-scroll="1"
-                data-arrows="true" data-dots="false" data-autoplay="false" data-speed="600" data-infinite="true"
-                data-responsive='[
-                {"breakpoint": 1400, "settings": {"slidesToShow": 8}},
-                {"breakpoint": 1200, "settings": {"slidesToShow": 6}},
-                {"breakpoint": 992, "settings": {"slidesToShow": 4}},
-                {"breakpoint": 768, "settings": {"slidesToShow": 3}},
-                {"breakpoint": 554, "settings": {"slidesToShow": 4}}
-             ]'>
-                @foreach ($categories as $category)
-                    <div class="js-slide text-center d-flex justify-content-center pb-3">
-                        <a href="{{ route('category', $category->slug) }}" class="category-item">
-                            <div class="category-img-wrapper">
-                                @if ($category->logo)
-                                    <img src="{{ asset($category->logo) }}" alt="{{ $category->name }}" loading="lazy">
-                                @else
-                                    <img src="{{ asset('frontend/assets/img/placeholder-category.png') }}"
-                                        alt="{{ $category->name }}" loading="lazy">
-                                @endif
-                            </div>
-                            <span class="category-name">{{ $category->name }}</span>
-                        </a>
-                    </div>
+
+            <!-- Desktop & Tablet (No Slider: 2 rows x 6 cols = 12 categories) -->
+            <div class="category-desktop-grid">
+                @foreach ($categories->take(12) as $category)
+                    <a href="{{ route('category', $category->slug) }}" class="category-card">
+                        <div class="category-img-circle-wrapper">
+                            @if ($category->logo)
+                                <img src="{{ asset($category->logo) }}" alt="{{ $category->name }}" loading="lazy">
+                            @else
+                                <img src="{{ asset('frontend/assets/img/placeholder-category.png') }}"
+                                    alt="{{ $category->name }}" loading="lazy">
+                            @endif
+                        </div>
+                        <span class="category-name">{{ $category->name }}</span>
+                    </a>
                 @endforeach
+            </div>
+
+            <!-- Mobile Only (2 Screens x 6 Categories = 3 cols x 2 rows per screen) -->
+            <div class="category-mobile-wrapper">
+                <div class="js-slick-carousel u-slick category-carousel-mobile" data-slides-show="1"
+                    data-slides-scroll="1" data-arrows="false" data-dots="true" data-autoplay="false"
+                    data-infinite="false">
+                    @foreach ($categories->take(12)->chunk(6) as $chunk)
+                        <div class="js-slide">
+                            <div class="category-mobile-grid">
+                                @foreach ($chunk as $category)
+                                    <a href="{{ route('category', $category->slug) }}" class="category-card">
+                                        <div class="category-img-circle-wrapper">
+                                            @if ($category->logo)
+                                                <img src="{{ asset($category->logo) }}" alt="{{ $category->name }}"
+                                                    loading="lazy">
+                                            @else
+                                                <img src="{{ asset('frontend/assets/img/placeholder-category.png') }}"
+                                                    alt="{{ $category->name }}" loading="lazy">
+                                            @endif
+                                        </div>
+                                        <span class="category-name">{{ $category->name }}</span>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
         </div>
     </div>
+
 
     <div class="container">
         <!-- Full banner -->
