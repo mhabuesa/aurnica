@@ -78,7 +78,7 @@ class PaymentController extends Controller
 
             OrderConfirmationJob::dispatch($data)->delay(5);
 
-           return view('frontend.order.order_placed', compact('order'));
+           return view('frontend.order.payment_success', compact('order'));
            
         } elseif ($transaction->payment_type == 'charity') {
 

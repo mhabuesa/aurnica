@@ -191,48 +191,18 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-main-item">
+                    <a class="nav-main-link {{ request()->routeIs('admin.review.*') ? 'active' : '' }}"
+                        href="{{ route('admin.review.index', ['status' => 0]) }}">
+                        <span class="nav-main-link-name">
+                            <i class="fa fa-star me-2"></i>Product Reviews
+                        </span>
+                    </a>
+                </li>
 
                 {{-- Sunnah Shopping --}}
                 <li class="nav-main-heading">
-                    </i> Sunnah Shopping
-                </li>
-
-                <li class="nav-main-item {{ request()->routeIs('admin.sunnah.*') ? 'open' : '' }}">
-                    <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
-                        aria-expanded="false" href="#">
-                        <i class="nav-main-link-icon fa-brands fa-square-web-awesome"></i>
-                        <span class="nav-main-link-name">Sunnah Shopping</span>
-                    </a>
-                    <ul class="nav-main-submenu">
-                        <li class="nav-main-item">
-                            <a class="nav-main-link {{ request()->routeIs('admin.sunnah.category.index') ? 'active' : '' }}"
-                                href="{{ route('admin.sunnah.category.index') }}">
-                                <span class="nav-main-link-name">
-                                    <i class="fas fa-layer-group me-2"></i> Category
-                                </span>
-                            </a>
-                        </li>
-                        <li class="nav-main-item">
-                            <a class="nav-main-link {{ request()->routeIs('admin.sunnah.subcategory.index') ? 'active' : '' }}"
-                                href="{{ route('admin.sunnah.subcategory.index') }}">
-                                <span class="nav-main-link-name">
-                                    <i class="fas fa-folder-open me-2"></i> Subcategory
-                                </span>
-                            </a>
-                        </li>
-                        <li class="nav-main-item">
-                            <a class="nav-main-link {{ request()->routeIs('admin.sunnah.products.index') ? 'active' : '' }}"
-                                href="{{ route('admin.sunnah.products.index') }}">
-                                <span class="nav-main-link-name">
-                                    <i class="fas fa-folder-open me-2"></i> Products
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="nav-main-heading">
-                    </i> Promotion management
+                    </i> Home Page Management
                 </li>
                 <li class="nav-main-item">
                     <a class="nav-main-link {{ request()->routeIs('admin.navMenu.*') ? 'active' : '' }}"
@@ -252,6 +222,20 @@
                         </span>
                     </a>
                 </li>
+                <li class="nav-main-item">
+                    <a class="nav-main-link {{ request()->routeIs('admin.selectedCategory.*') ? 'active' : '' }}"
+                        href="{{ route('admin.selectedCategory.index') }}">
+                        <span class="nav-main-link-name">
+                            <i class="fa-solid fa-tags me-2"></i>
+                            Selected Category
+                        </span>
+                    </a>
+                </li>
+
+                <li class="nav-main-heading">
+                    </i> Promotion management
+                </li>
+
                 <li
                     class="nav-main-item {{ request()->routeIs('admin.coupon.*') ? 'open' : (request()->routeIs('admin.todaysDeal.*') ? 'open' : (request()->routeIs('admin.offer.*') ? 'open' : (request()->routeIs('admin.featuredProduct.*') ? 'open' : ''))) }}">
                     <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true"
@@ -276,14 +260,14 @@
                                 </span>
                             </a>
                         </li>
-                        <li class="nav-main-item">
+                        {{-- <li class="nav-main-item">
                             <a class="nav-main-link {{ request()->routeIs('admin.todaysDeal.index') ? 'active' : '' }}"
                                 href="{{ route('admin.todaysDeal.index') }}">
                                 <span class="nav-main-link-name">
                                     <i class="fas fa-id-badge me-2"></i> Todays Deal
                                 </span>
                             </a>
-                        </li>
+                        </li> --}}
                         <li class="nav-main-item">
                             <a class="nav-main-link {{ request()->routeIs('admin.featuredProduct.index') ? 'active' : '' }}"
                                 href="{{ route('admin.featuredProduct.index') }}">

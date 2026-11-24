@@ -8,7 +8,7 @@
     @section('content')
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-12 m-auto" id="filterForm" style="display:;">
+                <div class="col-lg-12 m-auto" id="filterForm" style="display: none;">
                     <div class="block block-rounded">
                         <div class="block-header block-header-default">
                             <h3 class="block-title">
@@ -27,8 +27,7 @@
                                         <select class="form-control __form-control" name="order_type" id="order_type">
                                             <option value="all">All</option>
                                             <option value="pos">POS</option>
-                                            <option value="frontend">Frontend</option>
-                                            <option value="landing">Campaign</option>
+                                            <option value="web">Frontend</option>
                                         </select>
                                     </div>
                                 </div>

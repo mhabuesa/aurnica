@@ -145,9 +145,7 @@ class OrderController extends Controller
 
             OrderConfirmationJob::dispatch($data)->delay(5);
 
-            return redirect()
-                ->route('index')
-                ->with('success', 'Order placed successfully!');
+            return view('frontend.order.order_placed', compact('order'));
         }
 
         // Payment processing for SSLCommerz

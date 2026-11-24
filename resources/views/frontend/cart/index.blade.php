@@ -313,7 +313,7 @@
                                                             <!-- Unit Price (Desktop View) -->
                                                             <td class="col-price d-none d-md-table-cell">
                                                                 <span class="price taka font-weight-500"
-                                                                    data-price="{{ $price }}">৳
+                                                                    data-price="{{ $price }}">
                                                                     {{ $price }}</span>
                                                             </td>
 
@@ -341,7 +341,7 @@
                                                             <!-- Desktop Total Price Column -->
                                                             <td class="col-total d-none d-md-table-cell">
                                                                 <span
-                                                                    class="productPrice font-weight-bold text-dark font-size-16">৳
+                                                                    class="productPrice font-weight-bold text-dark taka font-size-16">
                                                                     {{ $item['qty'] * $price }}</span>
                                                             </td>
 
@@ -350,7 +350,7 @@
                                                                 <div class="mobile-price-box">
                                                                    
                                                                     <span class="price taka font-weight-600 text-dark"
-                                                                        data-price="{{ $price }}">৳
+                                                                        data-price="{{ $price }}">
                                                                         {{ $price }}</span>
                                                                 </div>
 

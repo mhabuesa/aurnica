@@ -49,7 +49,7 @@
 .taka::before {
     content: "৳";
     margin-right: 2px;
-    font-size: 25px;
+    font-size: 15px;
 }
 
 /* Tracking Order Page */

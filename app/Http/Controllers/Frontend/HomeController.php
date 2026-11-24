@@ -9,7 +9,9 @@ use App\Models\Category;
 use App\Models\FeaturedProduct;
 use App\Models\NewsletterSubscriber;
 use App\Models\Offer;
+use App\Models\OrderDetails;
 use App\Models\Product;
+use App\Models\SelectedCategory;
 use App\Models\TodaysDeal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -35,6 +37,16 @@ class HomeController extends Controller
         $promoMainBanners = $homeBanners->where('type', 'promo_main');
         $promoMiniBanners = $homeBanners->where('type', 'promo_mini');
 
+
+        $bestProducts = OrderDetails::query()
+            ->selectRaw('product_id, SUM(qty) as total_qty')
+            ->whereHas('product') // শুধু যেগুলোর Product আছে
+            ->with('product')
+            ->groupBy('product_id')
+            ->orderByDesc('total_qty')
+            ->limit(15)
+            ->get();
+
         // Todays Deal
         $todaysDeals = Cache::remember('todaysDeals', 86400, function () {
             return TodaysDeal::where('status', 1)->with('product')->take(20)->latest()->get();
@@ -48,6 +60,22 @@ class HomeController extends Controller
         $categories = Cache::remember('categories', 86400, function () {
             return Category::where('status', 1)
                 ->select('id', 'name', 'logo', 'slug')
+                ->get();
+        });
+
+        $selectedCategories = Cache::remember('selectedCategories', 86400, function () {
+            return SelectedCategory::query()
+                ->where('status', '1')
+                ->orderBy('priority', 'asc')
+                ->with([
+                    'category' => function ($q) {
+                        $q->where('status', '1');
+                    },
+                    'category.activeProducts'
+                ])
+                ->whereHas('category', function ($q) {
+                    $q->where('status', '1');
+                })
                 ->get();
         });
 
@@ -66,15 +94,16 @@ class HomeController extends Controller
             })
             ->values();
 
-            $brands = Cache::remember('brands', 86400, function () {
-                return Brand::where('status', '1')
-                    ->orderBy('priority', 'asc')
-                    ->get();
-            });
+        $brands = Cache::remember('brands', 86400, function () {
+            return Brand::where('status', '1')
+                ->orderBy('priority', 'asc')
+                ->get();
+        });
 
         return view('frontend.home.index', compact(
             'mainBanners',
             'topBanner',
+            'bestProducts',
             'middleBanner',
             'bottomBanner',
             'promoMainBanners',
@@ -82,6 +111,7 @@ class HomeController extends Controller
             'todaysDeals',
             'latestProducts',
             'categories',
+            'selectedCategories',
             'recentProducts',
             'brands',
             'offers'

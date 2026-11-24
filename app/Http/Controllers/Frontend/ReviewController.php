@@ -20,7 +20,6 @@ class ReviewController extends Controller
             'rating' => 'required|integer|min:1|max:5',
         ]);
 
-        // dd(auth('customer')->id());
 
         // Create a new review
         Review::create([

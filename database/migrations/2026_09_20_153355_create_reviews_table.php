@@ -14,9 +14,13 @@ return new class extends Migration
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
-            $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
-            $table->integer('rating')->unsigned()->max(5);
+            $table->foreignId('customer_id')->nullable()->constrained('customers')->nullOnDelete();
+            $table->string('customer_name')->nullable();
+            $table->string('customer_image')->nullable();
+            $table->string('source')->default('website');
+            $table->tinyInteger('rating')->unsigned();
             $table->longText('review');
+            $table->boolean('status')->default(0);
             $table->timestamps();
         });
     }

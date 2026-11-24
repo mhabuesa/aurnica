@@ -169,6 +169,7 @@
             gap: 10px;
             margin-bottom: 0;
         }
+
         .home-category-header {
             margin-bottom: 15px;
         }
@@ -282,9 +283,10 @@
                 border-radius: 20px;
             }
 
-            .home-category-header  {
+            .home-category-header {
                 margin-bottom: 20px !important;
             }
+
             .home-category-header h3 {
                 font-size: 18px;
             }
@@ -683,16 +685,13 @@
 
         <!-- End Banner -->
         <!-- Todays Deal products -->
-        @if ($todaysDeals->count() > 0)
+        @if ($bestProducts->count() > 0)
             <div class="mb-1 home-category-slider">
 
                 {{-- Section Header --}}
                 <div
                     class="home-category-header d-flex justify-content-between border-bottom border-color-1 flex-lg-nowrap flex-wrap border-md-down-top-0 border-md-down-bottom-0">
-                    <h3 class="section-title section-title__full mb-0 font-size-22">আজকের সেরা অফার</h3>
-                    <a class="d-block text-gray-16" href="{{ route('todays.deal') }}">
-                        সব দেখুন <i class="ec ec-arrow-right-categproes"></i>
-                    </a>
+                    <h3 class="section-title section-title__full mb-0 font-size-22">Best Selling</h3>
                 </div>
 
                 {{-- Product Slider --}}
@@ -708,7 +707,7 @@
                 { "breakpoint": 554, "settings": { "slidesToShow": 2 } }
             ]'>
 
-                    @foreach ($todaysDeals as $item)
+                    @foreach ($bestProducts as $item)
                         @php
                             $product = $item->product ?? $item; // Product object safety check
                         @endphp
@@ -776,10 +775,14 @@
     </div>
 
     <div class="container">
-        <!-- Category products -->
+        <!-- Selected Category Products -->
+        @foreach ($selectedCategories as $selectedCategory)
+            @php
+                $category = $selectedCategory->category;
+                $products = $category?->activeProducts ?? collect();
+            @endphp
 
-        @foreach ($categories as $category)
-            @if ($category->activeProducts->isNotEmpty())
+            @if ($category && $products->isNotEmpty())
                 <div class="mb-1 home-category-slider">
                     <div
                         class="home-category-header d-flex justify-content-between border-bottom border-color-1 flex-lg-nowrap flex-wrap border-md-down-top-0 border-md-down-bottom-0">
@@ -787,10 +790,12 @@
                             {{ $category->name }}
                         </h3>
 
-                        <a class="d-block text-gray-16" href="{{ route('category', $category->slug) }}">
-                            সব দেখুন
-                            <i class="ec ec-arrow-right-categproes"></i>
-                        </a>
+                        @if (!empty($category->slug))
+                            <a class="d-block text-gray-16" href="{{ route('category', $category->slug) }}">
+                                View All
+                                <i class="ec ec-arrow-right-categproes"></i>
+                            </a>
+                        @endif
                     </div>
 
                     <div class="js-slick-carousel u-slick overflow-hidden u-slick-overflow-visble px-1"
@@ -798,22 +803,103 @@
                         data-slides-show="7" data-slides-scroll="1" data-arrows="true" data-dots="false"
                         data-autoplay="true" data-speed="600" data-infinite="true"
                         data-responsive='[{
-                        "breakpoint": 1400,
-                        "settings": {"slidesToShow": 5}
-                    }, {
-                        "breakpoint": 1200,
-                        "settings": {"slidesToShow": 3}
-                    }, {
-                        "breakpoint": 992,
-                        "settings": {"slidesToShow": 3}
-                    }, {
-                        "breakpoint": 768,
-                        "settings": {"slidesToShow": 2}
-                    }, {
-                        "breakpoint": 554,
-                        "settings": {"slidesToShow": 2}
-                    }]'>
-                        @foreach ($category->activeProducts as $product)
+                    "breakpoint": 1400,
+                    "settings": {"slidesToShow": 5}
+                }, {
+                    "breakpoint": 1200,
+                    "settings": {"slidesToShow": 3}
+                }, {
+                    "breakpoint": 992,
+                    "settings": {"slidesToShow": 3}
+                }, {
+                    "breakpoint": 768,
+                    "settings": {"slidesToShow": 2}
+                }, {
+                    "breakpoint": 554,
+                    "settings": {"slidesToShow": 2}
+                }]'>
+                        @foreach ($products as $product)
+                            <div class="js-slide px-1">
+                                <div class="product-item remove-divider">
+                                    <div class="product-item__outer">
+                                        <div class="product-item__inner p-2 p-md-3 border rounded bg-light">
+                                            <div class="product-card-custom">
+
+                                                {{-- Product Image --}}
+                                                <div class="product-image-box rounded">
+                                                    <a
+                                                        href="{{ !empty($product->slug) ? route('product', $product->slug) : '#' }}">
+                                                        <img class="img-fluid"
+                                                            src="{{ !empty($product->image) ? asset($product->image) : asset('images/default.png') }}"
+                                                            alt="{{ $product->name }}" loading="lazy">
+                                                    </a>
+                                                </div>
+
+                                                {{-- Product Name --}}
+                                                <h5 class="product-title-custom">
+                                                    <a href="{{ !empty($product->slug) ? route('product', $product->slug) : '#' }}"
+                                                        class="text-primary font-weight-bold">
+                                                        {{ $product->name }}
+                                                    </a>
+                                                </h5>
+
+                                                {{-- Product Price --}}
+                                                <div class="product-price-custom text-black">
+                                                    ৳
+                                                    {{ function_exists('productPrice') ? productPrice($product->id) : $product->price ?? 0 }}
+                                                </div>
+
+                                                {{-- Add to Cart Button --}}
+                                                <div class="product-cart-custom">
+                                                    <button type="button"
+                                                        class="btn btn-primary btn-sm text-white w-100 border-primary rounded transition-3d-hover py-2 ajax-add-to-cart"
+                                                        data-product-id="{{ $product->id }}">
+                                                        <i class="ec ec-add-to-cart"></i> Add to Cart
+                                                    </button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+
+                    </div>
+                </div>
+            @endif
+        @endforeach
+        <!-- End Selected Category Products -->
+    </div>
+
+
+    <div class="container mb-4">
+        @if ($latestProducts->count() > 0)
+            <div class="mb-1 home-category-slider">
+
+                {{-- Section Header --}}
+                <div
+                    class="home-category-header d-flex justify-content-between border-bottom border-color-1 flex-lg-nowrap flex-wrap border-md-down-top-0 border-md-down-bottom-0">
+                    <h3 class="section-title section-title__full mb-0 pb-2 font-size-22">New Products</h3>
+                    <a class="d-block text-gray-16" href="{{ route('products') }}">View
+                        <i class="ec ec-arrow-right-categproes"></i></a>
+                </div>
+
+                {{-- Product Slider --}}
+                <div class="js-slick-carousel u-slick overflow-hidden u-slick-overflow-visble px-1"
+                    data-pagi-classes="text-center right-0 bottom-1 left-0 u-slick__pagination u-slick__pagination--long mb-0 z-index-n1 mt-4"
+                    data-slides-show="7" data-slides-scroll="1" data-arrows="true" data-dots="false"
+                    data-autoplay="true" data-speed="600" data-infinite="true"
+                    data-responsive='[
+                { "breakpoint": 1400, "settings": { "slidesToShow": 5 } },
+                { "breakpoint": 1200, "settings": { "slidesToShow": 4 } },
+                { "breakpoint": 992, "settings": { "slidesToShow": 3 } },
+                { "breakpoint": 768, "settings": { "slidesToShow": 2 } },
+                { "breakpoint": 554, "settings": { "slidesToShow": 2 } }
+            ]'>
+
+                    @foreach ($latestProducts as $product)
+                        @if ($product)
                             <div class="js-slide px-1">
                                 <div class="product-item remove-divider">
                                     <div class="product-item__outer">
@@ -855,94 +941,16 @@
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
+                        @endif
+                    @endforeach
 
-                    </div>
                 </div>
-            @endif
-        @endforeach
-
-        <!-- End Category products -->
-    </div>
-    @if ($latestProducts->count() > 0)
-        <div class="container">
-            <!-- Latest Prodcut Section -->
-            <div class="mb-4 home-category-slider">
-                <div
-                    class="home-category-header d-flex justify-content-between border-bottom border-color-1 flex-lg-nowrap flex-wrap border-md-down-top-0 border-md-down-bottom-0">
-                    <h3 class="section-title section-title__full mb-0 pb-2 font-size-22">নতুন পণ্যসমূহ</h3>
-                    <a class="d-block text-gray-16" href="{{ route('products') }}">সব দেখুন
-                        <i class="ec ec-arrow-right-categproes"></i></a>
-                </div>
-                <!-- Latest Content -->
-                <div class="tab-content">
-                    <div class="pt-0">
-
-                        <ul class="row list-unstyled products-group no-gutters">
-
-                            @foreach ($latestProducts as $product)
-                                <li class="col-6 col-md-3 col-lg-2 product-item remove-divider mt-2">
-
-                                    <div class="product-item__outer h-100 m-1">
-
-                                        <div class="product-item__inner p-2 p-md-3 border rounded bg-light h-100">
-
-                                            <div class="product-card-custom">
-
-                                                {{-- Product Image --}}
-                                                <div class="product-image-box rounded">
-                                                    <a href="{{ route('product', $product->slug) }}">
-                                                        <img class="img-fluid" src="{{ asset($product->image) }}"
-                                                            alt="{{ $product->name }}" loading="lazy">
-                                                    </a>
-                                                </div>
-
-                                                {{-- Product Name --}}
-                                                <h5 class="product-title-custom">
-                                                    <a href="{{ route('product', $product->slug) }}"
-                                                        class="text-primary font-weight-bold ">
-                                                        {{ $product->name }}
-                                                    </a>
-                                                </h5>
-
-                                                {{-- Product Price --}}
-                                                <div class="product-price-custom text-black">
-                                                    ৳ {{ productPrice($product->id) }}
-                                                </div>
-
-                                                {{-- Add to Cart --}}
-                                                <div class="product-cart-custom">
-                                                    <button type="button"
-                                                        class="btn btn-primary btn-sm text-white w-100 border-primary rounded transition-3d-hover py-2 ajax-add-to-cart"
-                                                        data-product-id="{{ $product->id }}">
-
-                                                        <i class="ec ec-add-to-cart"></i>
-                                                        Add to Cart
-
-                                                    </button>
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                </li>
-                            @endforeach
-
-                        </ul>
-
-                    </div>
-                </div>
-                <!-- End Latest Content -->
             </div>
-            <!-- End Latest Prodcut Section -->
-        </div>
-    @endif
+        @endif
+    </div>
 
 
-    <div class="container">
+    <div class="container mt-3">
 
         <!-- Brand Carousel -->
         <div class="mb-3">

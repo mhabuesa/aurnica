@@ -8,11 +8,14 @@ use App\Models\Category;
 use App\Models\FeaturedProduct;
 use App\Models\Product;
 use App\Models\ProductVariation;
+use App\Models\Review;
+use App\Models\SelectedCategory;
 use App\Models\TodaysDeal;
 use App\Observers\AppSettingObserver;
 use App\Observers\BannerObserver;
 use App\Observers\CategoryObserver;
 use App\Observers\LatestProductsObserver;
+use App\Observers\SelectedCategoryObserver;
 use App\Observers\TodaysDealObserver;
 use App\Services\CartService;
 use Illuminate\Pagination\Paginator;
@@ -42,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrapFive();
         AppSetting::observe(AppSettingObserver::class);
         Category::observe(CategoryObserver::class);
+        SelectedCategory::observe(SelectedCategoryObserver::class);
         Banner::observe(BannerObserver::class);
         TodaysDeal::observe(TodaysDealObserver::class);
         Product::observe(LatestProductsObserver::class);
@@ -70,7 +74,7 @@ class AppServiceProvider extends ServiceProvider
                     ->select('id', 'name', 'logo', 'slug')
                     ->get();
             });
-            
+
             $featuredProducts = Cache::remember('featuredProducts', 86400, function () {
                 return FeaturedProduct::where('status', 1)
                     ->get();
@@ -107,6 +111,14 @@ class AppServiceProvider extends ServiceProvider
                 'cartProducts' => $products,
                 'cartVariations' => $variations,
                 'cartCount' => count($cart),
+            ]);
+        });
+
+        View::composer('backend.review.partials.sidebar', function ($view) {
+            $view->with('reviewCounts', [
+                'pending'  => Review::where('status', 0)->count(),
+                'approved' => Review::where('status', 1)->count(),
+                'total'    => Review::count(),
             ]);
         });
     }

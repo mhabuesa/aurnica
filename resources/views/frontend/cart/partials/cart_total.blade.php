@@ -11,20 +11,20 @@
             {{-- Subtotal --}}
             <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
                 <span class="fw-medium">Subtotal</span>
-                <span class="fw-medium price cart-subtotal taka">৳0.00</span>
+                <span class="fw-medium price cart-subtotal taka">0.00</span>
             </div>
 
             {{-- Coupon Discount --}}
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <span class="fw-medium">Coupon Discount</span>
-                <span class="fw-medium price taka coupon-discount-text">৳(-) 0.00</span>
+                <span class="fw-medium price taka coupon-discount-text">(-) 0.00</span>
             </div>
 
             {{-- Shipping --}}
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <span class="fw-medium">Shipping</span>
                 <span class="fw-medium price taka shipping-text text-end taka shipping-charge"
-                    data-shipping="0">৳0.00</span>
+                    data-shipping="0">0.00</span>
             </div>
 
             {{-- Promo Code --}}
@@ -74,7 +74,7 @@
             {{-- Total --}}
             <div class="d-flex justify-content-between align-items-center mt-4 mb-4 px-4">
                 <span class="fw-bold font-size-20">Total (BDT)</span>
-                <span class="fw-bold font-size-20 text-success price theme-color cart-total taka">৳0.00</span>
+                <span class="fw-bold font-size-20 text-success price theme-color cart-total taka">0.00</span>
             </div>
 
             <div class="border-top border-width-3 border-color-1 pt-3 mb-3">
